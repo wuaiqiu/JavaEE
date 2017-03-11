@@ -1,0 +1,162 @@
+								Extract Superclass
+								
+						
+1.Extract Superclass【提取父类】
+
+		简单来说，就是当我们发现定义的方法，可以被抽象成更高层次对象的时候，就需要考虑
+		
+抽象一个更上层的父类，并将接口迁移到父类中去定义
+
+		
+====================================================================================
+
+	实例：
+	
+		public class Dog{
+			public void EatFood(){
+				// eat some food
+			}
+
+			public void Groom(){
+				// perform grooming
+			}
+		}
+		
+-----------------------------解决方案---------------------------------------------------
+
+	public class Animal{
+        
+		public void EatFood(){
+            // eat some food
+        }
+
+        public void Groom(){
+            // perform grooming
+        }
+    }
+
+    public class Dog1 extends Animal{
+    }
+
+
+	
+	
+2.Extract Factory Class【提取工厂类】
+
+	将创建对象的过程给封装起来，这就是工厂模式的设计初衷。将一些列有关系的产品簇组合成一个最终的
+	
+产品，便是抽象工厂了。使用工厂模式，从重构角度来看，就是为了实现单一职责，使得代码更加稳定。
+
+===================================================================================
+
+	实例：
+		
+			public class PoliceCarController{
+        
+				public PoliceCar New(int mileage, boolean serviceRequired){
+					PoliceCar policeCar = new PoliceCar();
+					policeCar.ServiceRequired = serviceRequired;
+					policeCar.Mileage = mileage;
+
+				return policeCar;
+				}
+			}
+    
+			class PoliceCar{
+        
+				public boolean ServiceRequired;
+				public int Mileage;
+			}
+			
+			
+-----------------------------解决方案-------------------------------------------------
+
+	  public interface IPoliceCarFactory{
+        PoliceCar Create(int mileage, boolean serviceRequired);
+	  }
+
+		public class PoliceCarFactory implements IPoliceCarFactory{
+			public PoliceCar Create(int mileage, boolean serviceRequired){
+				PoliceCar policeCar = new PoliceCar();
+				policeCar.ServiceRequired = serviceRequired;
+				policeCar.Mileage = mileage;
+				return policeCar;
+			}
+		}
+
+		public class PoliceCarController1{
+			public IPoliceCarFactory PoliceCarFactory ;
+
+			public PoliceCarController1(IPoliceCarFactory policeCarFactory){
+				PoliceCarFactory = policeCarFactory;
+			}
+
+        public PoliceCar New(int mileage, boolean serviceRequired){
+            return PoliceCarFactory.Create(mileage, serviceRequired);
+        }
+	}
+
+
+	
+
+3.Extract Subclass【提取子类】
+
+	这个方式，之前好像已经提到的下移方法类似，也是为了遵循接口隔离原则。
+	
+==========================================================================
+
+	public interface Ball{
+
+        public void play();
+
+        public void size();
+
+        //打气
+        public void pumpUp();
+
+    }
+	
+	
+-----------------解决方案-------------------------------------------------
+
+	 public interface BasketBall extends   Ball2{
+        //打气
+        public void pumpUp();
+	  }
+
+
+    public interface Ball2{
+
+        public void play();
+
+        public void size();
+
+    }
+	
+	
+	
+4.Collapse Hierarchy【合并继承层次结构】
+
+	将子类的方法迁移到父类中
+	
+========================================================================
+
+	public abstract class Website{
+        public abstract String Title();
+    }
+
+    public abstract  class StudentWebsite extends Website{
+        public abstract boolean IsActive() ;
+    }
+	
+	
+-----------------------解决方案-------------------------------------------------
+
+	  public abstract class Website2{
+        public abstract String Title();
+        public abstract boolean IsActive() ;
+     }
+
+     public abstract  class StudentWebsite2 extends Website{
+       
+     }
