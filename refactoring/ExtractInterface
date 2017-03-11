@@ -1,0 +1,114 @@
+							Extract Interface
+							
+							
+1.Extract Interface【提取接口】
+
+		遵循了接口最小原则来设计的
+		
+=======================================================================
+	
+	实例：
+	
+		 interface Bird {
+
+				public void eat();
+
+
+				public void fly();
+
+				//我们假设有的鸟是不会唱歌的
+				public void song();
+		}
+		
+---------------------解决方案--------------------------------------
+
+		interface Bird1 {
+	
+			public void eat();
+			public void fly();
+
+		}
+
+		interface SongBird extends Bird1 {
+
+		//我们假设有的鸟是不会唱歌的
+		public void song();
+		}
+		
+		
+		
+		
+		
+2.Extract Method【提取方法】
+
+		 提取方法是重构中很常见到的一种手法。他可以通过方法名，增加代码的可读性，减少不必要
+		 
+的注释说明
+
+=============================================================================
+		实例：
+		
+			 class Receipt {
+				private List<Float> discounts;
+				private List<Float> itemTotals;
+
+				public float CalculateGrandTotal() {
+					float subTotal = 0f;
+					for (Float itemTotal : itemTotals)
+					subTotal += itemTotal;
+
+				if (discounts.size() > 0) {
+					for (Float discount : discounts)
+						subTotal -= discount;
+					}
+
+				float tax = subTotal * 0.065f;
+
+				subTotal += tax;
+
+				return subTotal;
+				}
+			}
+			
+------------------------解决方案--------------------------------------
+
+		class Receipt1 {
+			private List<Float> discounts;
+			private List<Float> itemTotals;
+
+			public float CalculateGrandTotal() {
+				float subTotal = 0f;
+				subTotal=addItemTotals(itemTotals);
+				subTotal=minuteDiscounts(itemTotals);
+				subTotal=calcTax(subTotal);
+				return subTotal;
+			}
+
+
+			float addItemTotals(List<Float> itemTotals){
+
+				float subTotal = 0f;
+				for (Float itemTotal : itemTotals) {
+					subTotal += itemTotal;
+				}
+				return subTotal;
+			}
+
+			
+			float minuteDiscounts(List<Float> discounts){
+				float subTotal = 0f;
+			if (discounts.size() > 0) {
+				for (Float discount : discounts)
+					subTotal -= discount;
+			}
+				return subTotal;
+			}
+			
+			
+			float calcTax( float subTotal){
+				float tax = subTotal * 0.065f;
+				subTotal += tax;
+				return subTotal;
+			}
+
+		}
