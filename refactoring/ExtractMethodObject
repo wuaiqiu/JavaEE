@@ -1,0 +1,104 @@
+							Extract Method Object
+							
+							
+1.Extract Method Object【提取方法对象】
+
+	这并不是一种很常见的重构手段，即当我们对象中定义了很多变量，及其需要利用这些变量进行一
+	
+些业务操作的时候，可以考虑将方法提取到一个新的类中，这样就解耦了变量与逻辑操作的直接关联。也比
+
+较符合单一责任原则。
+
+==========================================================================================
+
+	实例：
+	
+		public class OrderLineItem{
+			
+			public int Price ;
+		}
+
+		public class Order{
+        
+			private List<OrderLineItem> OrderLineItems ;
+			private List<Integer> Discounts;
+			private int Tax ;
+
+        public int Calculate(){
+            int subTotal = 0;
+
+            // Total up line items
+            for (OrderLineItem lineItem : OrderLineItems){
+                subTotal += lineItem.Price;
+            }
+
+            // Subtract Discounts
+            for (int discount : Discounts)
+            subTotal -= discount;
+
+            // Calculate Tax
+            int tax = subTotal * Tax;
+
+            // Calculate GrandTotal
+            int grandTotal = subTotal + tax;
+
+            return grandTotal;
+        }
+    }
+	
+===========================================================================
+
+	分析：
+	
+		order中定义了很多关于自身的属性，还有对属性的一些业务操作，但是，计算价格，其实并不
+		
+是order对象本身应该关系的。因此，需要引入一个计算order price能力的类
+
+
+----------------------解决方案-------------------------------------------
+
+	 public class Order1{
+        private List<OrderLineItem> OrderLineItems ;
+        private List<Integer> Discounts;
+        private int Tax ;
+
+        public int Calculate(){
+            
+            return new OrderCalculator(this).Calculate();
+        }
+    }
+
+
+
+    public  class OrderCalculator{
+        private Order1 order;
+        private List<OrderLineItem> OrderLineItems ;
+            private List<Integer> Discounts;
+            private int Tax ;
+
+        public OrderCalculator(Order1 order){
+
+            this.order=order;
+        }
+
+        public int Calculate(){
+            int subTotal = 0;
+
+            // Total up line items
+            for (OrderLineItem lineItem : OrderLineItems){
+                subTotal += lineItem.Price;
+            }
+
+            // Subtract Discounts
+            for (int discount : Discounts)
+                subTotal -= discount;
+
+            // Calculate Tax
+            int tax = subTotal * Tax;
+
+            // Calculate GrandTotal
+            int grandTotal = subTotal + tax;
+
+            return grandTotal;
+        }
+    }
