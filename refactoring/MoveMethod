@@ -1,0 +1,97 @@
+							Move Method
+							
+											
+ 1.Move Method【搬移方法】
+ 
+ 
+		搬移方法，顾名思义就是将方法搬移至合适的位置，如将方法搬移到更频繁地使用它的类中。与
+		
+搬移方法相似的还有一种重构手段是搬移字段(Move Field)，即搬移属性。
+
+
+===========================================================================================
+
+	实例：  
+
+		class BankAccount {  
+		 
+		private AccountInterest accountInterest;  
+      
+		public BankAccount(AccountInterest accountInterest) {   
+			this.accountInterest = accountInterest;  
+		}  
+      
+		public AccountInterest getAccountInterest() {  
+			return this.accountInterest;  
+		}  
+      
+		public double calculateInterestRate() {  
+			
+			return 0.05;  
+		}  
+	}  
+  
+	class AccountInterest {  
+		private BankAccount account;  
+      
+		public AccountInterest(BankAccount account) {  
+			this.account = account;  
+		}  
+      
+		public BankAccount getAccount() {  
+			return this.account;  
+		}  
+      
+		public double getInterestRate() {  
+			return account.calculateInterestRate();  
+		}  
+      
+	}
+	
+	
+=====================================================================
+	分析：
+	
+		在上述代码中，很明显，AccountInterest使用calculateInterestRate()方法更为频繁，
+		
+它更希望得到该方法
+	
+------------------------解决方案-----------------------------------
+
+	将calculateInterestRate()方法从BankAccount类搬移到AccountInterest类中。
+	
+	class BankAccount {  
+		 
+		private AccountInterest accountInterest;  
+      
+		public BankAccount(AccountInterest accountInterest) {   
+			this.accountInterest = accountInterest;  
+		}  
+      
+		public AccountInterest getAccountInterest() {  
+			return this.accountInterest;  
+		}  
+     
+	}  
+  
+	class AccountInterest {  
+		private BankAccount account;  
+      
+		public AccountInterest(BankAccount account) {  
+			this.account = account;  
+		}  
+      
+		public BankAccount getAccount() {  
+			return this.account;  
+		}  
+      
+		public double getInterestRate() {  
+			return this.calculateInterestRate();  
+		}  
+		
+		public double calculateInterestRate() {  
+			
+			return 0.05;  
+		}  
+      
+	}
