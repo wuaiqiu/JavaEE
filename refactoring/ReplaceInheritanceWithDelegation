@@ -1,0 +1,46 @@
+						 Replace Inheritance with Delegation
+						 
+						 
+1.Replace Inheritance with Delegation【用委托取代继承】
+
+	设计模式中，很多模式就使用了委托的方式，来解耦继承带来的强依赖，比如装饰者，适配器模式等等。
+	
+	
+===============================================================================
+
+	实例：
+	
+		 class Sanitation {
+			public String WashHands() {
+				return "Cleaned!";
+			}
+		}
+
+		public class Child extends Sanitation {
+		}
+		
+--------------------------解决方案--------------------------------------------
+
+
+		class Sanitation1 {
+			public String WashHands() {
+            return "Cleaned!";
+			}
+		}
+
+		class Child1 {
+			private Sanitation1 Sanitation;
+
+			public Child1() {
+				Sanitation = new Sanitation1();
+			}
+
+			public String WashHands() {
+				return Sanitation.WashHands();
+			}
+		}
+		
+上述其实就是代理者模式的框架思路了，如果把Sanitation1暴露出来，就是装饰者了。
+	
+	
+
