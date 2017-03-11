@@ -1,0 +1,73 @@
+						Break Dependencies
+						
+			
+1.Break Dependencies【消除依赖】
+
+		当我们进行单元测试的时候，我们就需要一定的隔离，否则无法进行mock.良好的隔离，确实可以让单
+		
+元测试的Mock变得非常的简单和容易。
+
+		
+=============================================================================
+
+	实例：
+	
+		public class AnimalFeedingService{
+        
+			private boolean FoodBowlEmpty;
+
+			public void Feed(){
+				if (FoodBowlEmpty)
+					Feeder.ReplenishFood();
+
+				// more code to feed the animal
+			}
+		}
+
+		public static class Feeder{
+        
+			public static void ReplenishFood(){
+				// fill up bowl
+			}
+		}
+		
+================================================================================
+	分析：
+	
+		由于AnimalFeedingService直接依赖了静态类Feeder，因此当我们需要只测试FoodBowlEmpty的逻
+		
+辑判断走向的时候，必然会触发Feeder的方法，这其实并不是我们想要的。但是又无法直接对静态类进行mock.
+
+解决的办法，就是让Service跟静态的对象解耦
+
+---------------------------解决方案------------------------------------------
+
+	 public class AnimalFeedingService1{
+        
+		public IFeederService FeederService ;
+
+        public AnimalFeedingService1(IFeederService feederService){
+            FeederService = feederService;
+        }
+
+        private boolean FoodBowlEmpty ;
+
+        public void Feed(){
+           
+		   if (FoodBowlEmpty)
+                FeederService.ReplenishFood();
+
+            // more code to feed the animal
+        }
+    }
+
+    public interface IFeederService{
+        void ReplenishFood();
+    }
+
+    public class FeederService implements IFeederService{
+       
+	   public void ReplenishFood(){
+            Feeder.ReplenishFood();
+        }
+    }
