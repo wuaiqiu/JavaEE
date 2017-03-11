@@ -1,0 +1,101 @@
+								Encapsulate Conditional
+								
+								
+1.Encapsulate Conditional【封装条件表达式】
+
+	就是对复杂的条件逻辑判断，进行单独处理，这样，当条件参数发生变化的时候，不会影
+	
+响到真实的业务逻辑流程
+
+
+===================================================================================
+
+	实例：
+	
+		public class RemoteControl {
+			private String[] Functions;
+			private String Name;
+			private int CreatedYear;
+
+			public String PerformCoolFunction(String buttonPressed) {
+				// Determine if we are controlling some extra function
+				// that requires special conditions
+				if (Functions.length > 1 && Name == "RCA" && CreatedYear > new Date().getYear() - 2) {
+					return "doSomething";
+
+				}
+				return "";
+			}
+		}
+		
+		
+----------------------------解决方案----------------------------------------------
+
+	 public class RemoteControl2 {
+			private String[] Functions;
+			private String Name;
+			private int CreatedYear;
+
+			public String PerformCoolFunction(String buttonPressed) {
+				// Determine if we are controlling some extra function
+				// that requires special conditions
+				if (HasExtraFunctions()) {
+					return "doSomething";
+
+				}
+				return "";
+			}
+
+        private boolean HasExtraFunctions(){
+           
+		   return Functions.length > 1 && Name == "RCA" && CreatedYear > new Date().getYear() - 2 ;
+        
+		}
+
+    }
+	
+	
+2.Replace exception with conditional【用条件语句取代异常】
+
+		就是不能使用异常来代替控制逻辑
+		
+		
+=======================================================================
+
+	实例：
+		public class Microwave{
+
+
+			public boolean Start(){
+			
+            boolean foodCooked = false;
+            try{
+                //do something perhaps throw new exception
+                foodCooked = true;
+            }catch (Exception e){
+                foodCooked = false;
+            }
+
+            return foodCooked;
+			}
+		}
+
+-----------------------------解决方案----------------------------------------------
+
+	public class Microwave1{
+
+
+        public boolean Start(){
+            boolean foodCooked = false;
+               //mock 模拟先判断是否满足某种条件，避免异常发生
+                if(true){
+                    //do something
+                    foodCooked = true;
+                }else {
+
+                    foodCooked = false;
+                }
+
+            return foodCooked;
+        }
+    }
