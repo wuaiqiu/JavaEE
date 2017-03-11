@@ -1,0 +1,168 @@
+							Pull Up Method
+							
+	
+1.Pull Up Method【上移方法】
+
+		如果子类都有相同的方法，那就应该将方法提上到父类层
+		
+====================================================================
+
+	实例：
+	
+		abstract class Vehicle {
+			// other methods
+		}
+
+		class Car extends Vehicle {
+			public void Turn(String str) {
+				// code here
+			}
+		}
+
+		public class Motorcycle extends Vehicle {
+			public void Turn(String str) {
+				// code here
+			}
+		}
+		
+		
+		
+----------------------------解决方案--------------------------------
+
+		abstract class Vehicle1 {
+			public void Turn(String str) {
+				// code here
+			}
+		}
+
+		class Car1 extends Vehicle1 {
+				// code here
+		}
+
+		public class Motorcycle1 extends Vehicle1 {
+				// code here
+		}
+	
+
+	
+	
+		
+2.Pull Up Field【上移字段】
+
+		如果子类都有相同的字段，那就应该将字段提上到父类层
+		
+=======================================================================
+
+	实例：
+	
+			abstract class Account {
+			}
+
+			public class CheckingAccount extends Account {
+				private int _minimumCheckingBalance = 5;
+			}
+
+			public class SavingsAccount extends Account {
+				private int _minimumSavingsBalance = 5;
+			}
+			
+			
+--------------------解决方案--------------------------------
+
+		 abstract class Account1 {
+        protected int _minimumCheckingBalance = 5;
+		}
+    
+		public class CheckingAccount1 extends Account1 {
+        
+		}
+
+		public class SavingsAccount1 extends Account1 {
+    
+		}
+	
+
+
+	
+		
+3.Push Down Method【下移方法】
+
+		
+		与上升方法相比，有时候，父类的方法，随着业务的变化，只适合部分子类的时候，则需要将父类的
+		
+方法下移到具体需要的子类中，这样才符合接口最小原则
+
+		有些接口可能当初定义的时候，有些子类还未出现，因此不会有这样的问题。随着业务的增加，这样
+		
+的问题出现了，那么，我们就要及时的将接口下移
+
+======================================================================
+
+	实例：
+		
+			abstract class Animal {
+				//狗吠
+				public void Bark() {
+				// code to bark
+				}
+			}
+
+			class Dog extends Animal {
+			}
+
+			class Cat extends Animal {
+			}
+			
+			
+-------------------------------解决方案--------------------------------
+
+			abstract class Animal1 {
+        
+			}
+
+			class Dog1 extends Animal1 {
+
+				//狗吠
+				public void Bark() {
+				// code to bark
+				}
+			}
+
+			class Cat1 extends Animal1 {
+			}
+	
+
+	
+			
+4.Push Down Field【下移字段】
+
+	同下移方法
+	
+================================================================================
+
+	实例：
+	
+			abstract class Task {
+				protected String _resolution;
+			}
+
+			public class BugTask extends Task {
+			}
+
+			public class FeatureTask extends Task {
+			}
+			
+--------------------------解决方案--------------------------------
+
+				abstract class Task1 {
+
+				}
+
+				class BugTask1 extends Task1 {
+
+					protected String _resolution;
+				}
+
+				class FeatureTask1 extends Task1 {
+				}
+		
