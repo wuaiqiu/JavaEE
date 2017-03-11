@@ -1,0 +1,198 @@
+							Inner class
+							
+
+
+							
+1.简介
+
+	内部类是一个编译时的概念，一旦编译成功，就会成为完全不同的两类。对于一个名为outer的外部类和其
+
+内部定义的名为inner的内部类。编译完成后出现outer.class和outer$inner.class两类。所以内部类的成员
+
+变量/方法名可以和外部类的相同。
+
+	内部类与外部类的类名不能相同
+
+
+
+	
+2.成员内部类
+
+	成员内部类，就是作为外部类的成员，可以直接使用外部类的所有成员和方法，即使是private的。同时外
+	
+部类要访问内部类的所有成员变量/方法，则需要通过内部类的对象来获取。
+
+	成员内部类不能含有static的变量和方法。因为成员内部类需要先创建了外部类，才能创建它自己的
+	
+	
+	public class Outer { 
+    public static void main(String[] args) { 
+        Outer outer = new Outer(); 
+        Outer.Inner inner = outer.new Inner(); 
+        inner.print("Outer.new"); 
+ 
+        inner = outer.getInner(); 
+        inner.print("Outer.get"); 
+    } 
+ 
+    // 个人推荐使用getxxx()来获取成员内部类，尤其是该内部类的构造函数无参数时 
+    public Inner getInner() { 
+        return new Inner(); 
+    } 
+ 
+    public class Inner { 
+        public void print(String str) { 
+            System.out.println(str); 
+        } 
+    } 
+} 
+
+
+
+3. 局部内部类
+
+
+		局部内部类，是指内部类定义在方法和作用域内。 局部内部类也像别的类一样进行编译，但只
+		
+是作用域不同而已，只在该方法或条件的作用域内才能使用，退出这些作用域后无法引用的
+		
+	
+(1)定义在方法内：
+	
+public class Parcel4 { 
+    public Destination destination(String s) { 
+        
+		class PDestination implements Destination { 
+            private String label; 
+ 
+            private PDestination(String whereTo) { 
+                label = whereTo; 
+            } 
+ 
+            public String readLabel() { 
+                return label; 
+            } 
+        } 
+        
+		return new PDestination(s); 
+    } 
+ 
+    public static void main(String[] args) { 
+        Parcel4 p = new Parcel4(); 
+        Destination d = p.destination("Tasmania"); 
+    } 
+} 
+
+
+(2)定义在作用域里：
+
+
+public class Parcel5 { 
+    private void internalTracking(boolean b) { 
+        
+		if (b) { 
+           
+		   class TrackingSlip { 
+                private String id; 
+                TrackingSlip(String s) { 
+                    id = s; 
+                } 
+                String getSlip() { 
+                    return id; 
+                } 
+            } 
+			
+            TrackingSlip ts = new TrackingSlip("slip"); 
+            String s = ts.getSlip(); 
+        } 
+    } 
+ 
+    public void track() { 
+        internalTracking(true); 
+    } 
+ 
+    public static void main(String[] args) { 
+        Parcel5 p = new Parcel5(); 
+        p.track(); 
+    } 
+} 
+
+
+
+4.嵌套内部类
+
+		嵌套内部类，就是修饰为static的内部类。声明为static的内部类，不需要内部类对象和外部类对象
+		
+之间的联系，就是说我们可以直接引用outer.inner，即不需要创建外部类，也不需要创建内部类。
+
+		 嵌套类和普通的内部类还有一个区别：普通内部类不能有static数据和static属性，也不能包含嵌套类，
+		 
+但嵌套类可以。而嵌套类不能声明为private，一般声明为public，方便调用。
+
+
+5. 匿名内部类
+
+		为了免去给内部类命名，便倾向于使用匿名内部类，因为它没有名字。
+		
+		(1).new 匿名类，这个类是要先定义的
+		
+		(2).当所在的方法的形参需要被内部类里面使用时，该形参必须为final
+		
+		
+public class Outer { 
+    public static void main(String[] args) { 
+        Outer outer = new Outer(); 
+        Inner inner = outer.getInner("Inner", "gz"); 
+        System.out.println(inner.getName()); 
+    } 
+ 
+    public Inner getInner(final String name, String city) { 
+        return new Inner() { 
+            private String nameStr = name; 
+ 
+            public String getName() { 
+                return nameStr; 
+            } 
+        }; 
+    } 
+} 
+ 
+//注释后，编译时提示类Inner找不到 
+/* interface Inner { 
+    String getName(); 
+} */ 
+
+
+编译原理
+
+	Outer.class
+		
+public class Outer { 
+    public static void main(String[] args) { 
+        Outer outer = new Outer(); 
+        Inner inner = outer.getInner("Inner", "gz"); 
+        System.out.println(inner.getName()); 
+    } 
+	
+	public Inner getInner(final String name, String city) { 
+			return new Inner();
+	}
+}
+
+
+	Outer$Inner.class
+	
+class Outer$Inner{
+		
+	public Inner(){
+		this.nameStr=name;
+		}
+	public String getName() { 
+             return nameStr; 
+        } 
+}
+
+
+	内部类并不是直接调用方法传进来的参数，而是内部类将传进来的参数通过自己的构造器备份到了
+	
+自己的内部，自己内部的方法调用的实际是自己的属性而不是外部类方法的参数。所以需要final修饰
