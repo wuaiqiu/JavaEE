@@ -1,0 +1,80 @@
+						Introduce Parameter Object
+						
+						
+1.Introduce Parameter Object【引入参数对象】
+
+	此重构模式非常的好用，也非常容易上手，重点推荐，下面代码中，可以比较下
+	
+	
+===============================================================================
+
+	public void test(boolean check, String str, int order) {
+
+        //todo
+    }
+
+    public void test(Argument argument) {
+
+        //todo
+    }
+
+
+    class Argument {
+
+        boolean check;
+        String str;
+        int order;
+
+    }
+	
+	
+	
+	
+2.Introduce Design By Contract checks【引入契约式设计验证】
+
+	即要求我们对输入和输出都进行验证，已保证系统不会因为意想不到的情况出现，
+
+而导致程序出现不可以控的情况
+
+==============================================================================
+
+	实例：
+	
+	public class CashRegister{
+        public int TotalOrder(List<String> products, Calendar calendar){
+            int orderTotal =products.size();
+
+            orderTotal+=calendar.get(Calendar.SUNDAY);
+
+            return orderTotal;
+        }
+    }
+	
+	
+--------------------解决方案------------------------------------------------
+
+	public int TotalOrder2(List<String> products, Calendar calendar){
+
+            if (products == null) {
+
+                throw new NullPointerException("products must not be empty");
+            }
+            if (products.size() == 0) {
+
+                throw new ArithmeticException("products's size must more than one");
+            }
+            //calendar校验省略
+
+            int orderTotal = products.size();
+
+            orderTotal += calendar.get(Calendar.SUNDAY);
+            //输出校验
+            if (orderTotal == 0) {
+
+                throw new SecurityException("orderTotal's value must bigger than 0");
+            }
+
+
+            return orderTotal;
+        }
+		
