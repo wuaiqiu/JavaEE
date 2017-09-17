@@ -1,4 +1,5 @@
-package Base;
+package day13;
+
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -7,8 +8,8 @@ import org.junit.Test;
 
 /*
  *反射
- *	 反射机制指的是程序在运行时能够获取自身的信息。在java中，只要给定
- *类的名字， 那么就可以通过反射机制来获得类的所有信息。 
+ *	 JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；
+ *对于任意一个对象，都能够调用它的任意方法和属性； 
  * */
 
 public class JavaReflect {
@@ -68,10 +69,7 @@ public class JavaReflect {
 		 *	Field getDeclaredField(String name)//根据方法名获得public和非public变量
 		 *	Field[] getDeclaredFields()//获得类中所有的public和非public方法 
 		 * */
-		
-		
-			
-		
+
 			
 	}
 }

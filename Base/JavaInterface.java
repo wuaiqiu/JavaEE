@@ -1,4 +1,4 @@
-package Base;
+package day13;
 
 /*
  * 接口
@@ -8,6 +8,7 @@ package Base;
  * 		d.除非实现接口的类是抽象类，否则该类要定义接口中的所有方法。
  * 		e.接口无法被实例化，但是可以被实现。
  * 		f.接口不能包含成员变量，除了 static 和 final 变量。
+ * 		h.在接口中 不可以有构造方法
  * */
 
 public class JavaInterface {
