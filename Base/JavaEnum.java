@@ -45,12 +45,12 @@ enum ColorT{
 	RED("红色",1),GREEN("绿色",2),BLACK("黑色",3);
     
 	private String name ;
-    private int index ;
+    	private int index ;
      
-    private ColorT( String name , int index ){
-        this.name = name ;
-        this.index = index ;
-    }
+    	private ColorT( String name , int index ){
+        	this.name = name ;
+        	this.index = index ;
+    	}
      
     public String getName() {
         return name;

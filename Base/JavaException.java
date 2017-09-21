@@ -14,4 +14,47 @@ public class JavaException {
 	 public void deposit(double amount) throws Exception{
 		 		throw new Exception();
 	  }
+
+
+
+	//测试自定义错误类
+	public static void main(String[] args) {
+			try {
+				new Demo().fun();
+			}catch(MyException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+	}
+	
+}
+
+
+/*
+ * 
+ * IOException	-> Exception -> Throwable
+ * 
+ * Throwable函数
+ * 	public String getMessage() 返回关于发生的异常的详细信息
+ * 	public Throwable getCause()返回一个Throwable 对象代表异常原因。
+ * 	public void printStackTrace()打印错误输出流。
+ *  
+ * */
+
+/*
+ * 自定义错误处理函数
+ * 	
+ * */
+class MyException extends Exception{
+	public MyException(String msg) {
+		super(msg);
+	}
+}
+
+
+class Demo{
+	
+	public void fun() throws MyException{
+		throw new MyException("发现一个错误");
+	}
 }

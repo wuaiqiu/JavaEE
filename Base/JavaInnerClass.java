@@ -144,7 +144,7 @@ class Outerclass2{
  * 		a.匿名内部类必须要继承一个类或者实现一个接口
  * 		b.定义的匿名内部类是非持久，实例化出该对象后该类就会消失
  * 		c.匿名内部类为局部内部类
- * 		d.当所在的方法的形参需要被内部类里面使用时，该形参必须为final。因为内部类获取参数为拷贝引用。与方法内部参数无关
+ * 		d.当所在的方法的形参需要被内部类里面使用时，该形参必须为final(不可改变)。因为内部类获取参数为拷贝引用。与方法内部参数无关
  * 		e.匿名类返回的是Innerclass3接口对象，实现多态
  * */
 interface Innerclass3{
@@ -164,9 +164,8 @@ class Outerclass3{
 	public Innerclass3 fun2(final int a) {
 		
 		return new Innerclass3() {
-			int num=a-1;
 			public void fun() {
-				System.out.println(num);
+				System.out.println(a);
 			}
 		};
 	}
