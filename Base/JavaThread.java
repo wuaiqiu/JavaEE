@@ -375,4 +375,184 @@ public class JavaThreadD {
 		}
 }
 
-//---------------------------------------------------------------------------------//
+//----------------------------------线程间通信-----------------------------------------------//
+
+/*
+ * 进程间通信
+ * 	Object类方法：
+ *  wait()：导致当前线程等待并使其进入到等待阻塞状态
+ *	notify()：唤醒在此同步锁对象上等待的单个线程
+ *	notifyAll()：唤醒在此同步锁对象上等待的所有线程
+ * */
+
+//共享资源
+class Student{
+	public String name;
+	public int age;
+	public boolean flag; //标记
+}
+
+class GetStu extends Thread{
+	
+	public Student s;
+	public GetStu(Student s) {
+		this.s=s;
+	}
+	
+	public void run() {
+		synchronized (s) {
+			if(!s.flag) {
+				try {
+					System.out.println(Thread.currentThread().getName()+"即将阻塞...");
+					s.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			System.out.println(s.name+"===>"+s.age);
+			s.flag=false;
+			s.notify();
+		}
+	}
+}
+
+class SetStu extends Thread{
+	public Student s;
+	public int x;
+	public SetStu(Student s,int x) {
+		this.s=s;
+		this.x=x;
+	}
+	
+
+	public void run() {
+		synchronized (s) {
+			if(s.flag) {
+				try {
+					System.out.println(Thread.currentThread().getName()+"即将阻塞...");
+					s.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if(x%2==0) {
+				s.name="zhangsan";
+				s.age=11;
+			}else {
+				s.name="lisi";
+				s.age=14;
+			}
+			s.flag=true;
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			s.notify();
+		}
+	}
+	
+	
+}
+
+public class JavaThread {
+	
+		public static void main(String[] args) {
+			Student s11=new Student();
+			Student s22=new Student();
+			GetStu g1=new GetStu(s11);
+			GetStu g2=new GetStu(s22);
+			SetStu s1=new SetStu(s11,1);
+			SetStu s2=new SetStu(s22,2);
+			System.out.println("g1==>"+g1.getName());
+			System.out.println("g2==>"+g2.getName());
+			System.out.println("s1==>"+s1.getName());
+			System.out.println("s2==>"+s2.getName());
+			g1.start();
+			g2.start();
+			s1.start();
+			s2.start();
+			
+			/*
+			 * g1==>Thread-0
+			 * g2==>Thread-1
+			 * s1==>Thread-2
+			 * s2==>Thread-3
+			 * Thread-0即将阻塞...
+			 * Thread-1即将阻塞...
+			 * lisi===>14
+			 * zhangsan===>11
+			 * 
+			 * */
+			
+		}
+}
+
+
+//------------------------------------------线程组--------------------------------------------//
+
+/*
+ * 线程组
+ * 	a.Java中使用ThreadGroup来表示线程组，它可以对一批线程进行分类管理。
+ * 	b.默认线程组（即main线程组）
+ * 	c.只有在创建线程时才能指定其所在的线程组，线程运行中途不能改变它所属的线程组，也就是
+ * 说线程一旦指定所在的线程组，就直到该线程结束。 	
+ *
+ * 线程组操作
+ * 	ThreadGroup类
+ * 		a.ThreadGroup(String name)：以指定线程组名字来创建新线程组
+ * 		b.ThreadGroup(ThreadGroup parent,String name)：以指定的名字、指定的父线程组来创建
+ * 一个新线程组。
+ * 	
+ * 	Thread类
+ * 		a.Thread(ThreadGroup group,Runnable target)：group属于的线程组，target为新线程
+ * 		b.Thread(ThreadGroup group,Runnable target,String name)：group属于的线程组，
+ * target为新线程，name：线程名
+ * 		c.Thread(ThreadGroup group,String name)：新线程名为name，属于group线程组
+ * 		d.ThreadGroup	getThreadGroup() : 返回该线程所属的线程组。
+ * 	
+ * 线程组错误
+ * 		hreadGroup类实现了Thread.UncaughtExceptionHandler接口，所以每个线程所属的线程组将
+ * 会作为默认的异常处理器。当一个线程抛出未处理异常时，JVM会首先查找该异常对应的异常处理器处理该
+ * 异常；否则，JVM将会调用该线程所属的线程组对象的uncaughtException()方法来处理该异常。 
+ * 
+ * */
+
+//自定义异常处理器
+class MyException implements Thread.UncaughtExceptionHandler{
+
+	public void uncaughtException(Thread t, Throwable e) {
+		  System.out.println(t.getName() + " 线程出现了异常：" + e.getMessage());
+	}
+}
+
+
+class MyThread extends Thread{
+	
+	public MyThread(ThreadGroup tg,String name) {
+		super(tg,name);
+	}
+	
+	public void run() {
+		for(int i=0;i<1000;i++) {
+			System.out.println(this.getName()+"属于："+this.getThreadGroup().getName());
+		}
+	}
+}
+
+
+
+public class JavaThreadA {
+		public static void main(String[] args) {
+			System.out.println(Thread.currentThread().getName()+"属于："+Thread.currentThread().getThreadGroup().getName());
+			ThreadGroup tg=new ThreadGroup("wu");//创建一个新进程组
+			MyThread t1=new MyThread(tg,"T1");
+			t1.setUncaughtExceptionHandler(new MyException());
+			MyThread t2=new MyThread(tg,"T2");
+			MyThread t3=new MyThread(tg,"T3");
+			t1.start();
+			t2.start();
+			t3.start();
+		}
+}
+
