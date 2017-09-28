@@ -3,11 +3,11 @@ package Base;
  * 基本数据类型
  * 	byte(8)	short(16)	int(32)	  long(64)	float(32)	double(64)
  * 	boolean	char(16)
- * 		a.char字符需要单引号
- * 		b.前缀0表示8进制，而前缀0x代表16进制	
- * 		c.long类型需要在字面量后面加'L'，float类型需要在字面量后面加'f'
- * 		d.byte short int long默认值为0，float double默认值为0.0，boolean默认值为false，char默认值为Unicode码0
- * 		e.基本数据类型在全局时才有默认值
+ * 	a.char字符需要单引号
+ * 	b.前缀0表示8进制，而前缀0x代表16进制	
+ * 	c.long类型需要在字面量后面加'L'，float类型需要在字面量后面加'f'
+ * 	d.byte short int long默认值为0，float double默认值为0.0，boolean默认值为false，char默认值为Unicode码0
+ * 	e.基本数据类型在全局时才有默认值
  * 
  * 引用类型
  * 	a.对象、数组都是引用数据类型。

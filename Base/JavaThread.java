@@ -556,3 +556,95 @@ public class JavaThreadA {
 		}
 }
 
+
+//--------------------------------------------线程池--------------------------------------------------//
+
+/*
+ * 线程池
+ * 	
+ * 1.ThreadPoolExecutor（接口Executor -> 接口ExecutorService -> 抽象类AbstractExecutorService -> 类ThreadPoolExecutor）
+ * 		参数解释:corePoolSize：核心池的大小
+ * 				maximumPoolSize：线程池最大线程数
+ * 				keepAliveTime表示线程没有任务执行时最多保持多久时间会终止，由allowCoreThreadTimeOut决定什么时候起作用，空闲时间（任务已经执行完毕了，
+ * 				但是线程池中的线程并没有被回收）
+ * 				unit：参数keepAliveTime的时间单位
+ * 						TimeUnit.DAYS;               //天
+ * 						TimeUnit.HOURS;             //小时
+ * 						TimeUnit.MINUTES;           //分钟	
+ * 						TimeUnit.SECONDS;           //秒
+ * 						TimeUnit.MILLISECONDS;      //毫秒
+ * 				workQueue：一个阻塞队列，用来存储等待执行的任务
+ * 						ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小；ArrayBlockingQueue<Runnable>(int capacity) 
+ * 						LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE；LinkedBlockingQueue<Runnable>(int capacity) 
+ * 						SynchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务，再次添加任务时，需要前一个任务执行完；SynchronousQueue<Runnable>(true) 
+ * 				handler：表示当拒绝处理任务时的策略
+ * 						ThreadPoolExecutor.AbortPolicy:丢弃当前提交的任务并抛出RejectedExecutionException异常。
+ * 						ThreadPoolExecutor.DiscardPolicy：也是丢弃当前提交的任务，但是不抛出异常。
+ * 						ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行当前提交的任务
+ * 		ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) 
+ * 		ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) 
+ * 		void execute(Runnable command) :提交任务给线程池
+ * 		List<Runnable>	shutdownNow() :此时线程池不能接受新的任务，并且会去尝试终止正在执行的任务,并返回等待执行的任务列表
+ * 		void shutdown():此时线程池不能够接受新的任务，它会等待所有任务执行完毕
+ * 		BlockingQueue<Runnable>	getQueue():返回此执行程序使用的任务队列。
+ * 		int	getPoolSize():返回池中的当前线程数。
+ * 		void allowCoreThreadTimeOut(boolean value)：该值为true，则线程池数量最后销毁到0个。该值为false，超过核心线程数时，而且（超过最大值或者timeout过），
+ * 		就会销毁。 默认为false
+ * 		void setCorePoolSize(int corePoolSize):设置核心池大小
+ * 		void setMaximumPoolSize(int maximumPoolSize):设置允许的最大线程数 
+ * 		
+ * 
+ * 
+ * 
+ * 2.执行ThreadPoolExecutor原理
+ * 		1.如果当前线程池中的线程数目小于corePoolSize，则每来一个任务，就会创建一个线程去执行这个任务；
+ * 		2.如果当前线程池中的线程数目>=corePoolSize，则每来一个任务，会尝试将其添加到任务缓存队列当中，若添加成功，则该任务会等待空闲线程将其取出去执行；
+ * 若添加失败（一般来说是任务缓存队列已满），则会尝试创建新的线程去执行这个任务；
+ * 		3.如果当前线程池中的线程数目达到maximumPoolSize，则会采取任务拒绝策略进行处理；
+ * 		4.如果线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止，直至线程池中的线程数目不大于corePoolSize；如
+ * 果允许为核心池中的线程设置存活时间（allowCoreThreadTimeOut(true)），那么核心池中的线程空闲时间超过keepAliveTime，线程也会被终止。
+ * 
+ * 
+ * 
+ * 3.Executors(推荐)
+ * 		static ExecutorService	newCachedThreadPool()：创建一个缓冲池，缓冲池容量大小为Integer.MAX_VALUE；将corePoolSize设置为0，将maximumPoolSize设
+ * 	置为Integer.MAX_VALUE，使用的SynchronousQueue，也就是说来了任务就创建线程运行，当线程空闲超过60秒，就销毁线程。
+ * 		static ExecutorService	newSingleThreadExecutor()：创建容量为1的缓冲池；将corePoolSize和maximumPoolSize都设置为1，使用的LinkedBlockingQueue；	
+ * 		static ExecutorService	newFixedThreadPool(int nThreads)：创建固定容量大小的缓冲池；corePoolSize和maximumPoolSize值是相等的，它使用的LinkedBlockingQueue
+ * 		
+ * 		
+ * */
+
+
+class MyThread extends Thread{
+
+	private int num;
+	
+	public MyThread(int num) {
+		this.num=num;
+	}
+	public void run() {
+		System.out.println("正在执行task "+num);
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("task "+num+"执行完毕");
+	}
+}
+
+
+public class JavaThread {
+		
+		public static void main(String[] args) {
+				ThreadPoolExecutor th=new ThreadPoolExecutor(5, 10, 200,TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(5));
+				for(int i=0;i<15;i++) {
+					MyThread t=new MyThread(i);
+					th.execute(t);
+					System.out.println("线程池中线程数目："+th.getPoolSize()+"，队列中等待执行的任务数目："+th.getQueue().size());
+				}
+				th.shutdown();
+		}
+}
+
