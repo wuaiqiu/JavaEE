@@ -648,3 +648,47 @@ public class JavaThread {
 		}
 }
 
+//------------------------------volatile关键字------------------------------------------
+/*
+ *	 volatile关键字
+ *
+ *(1)可见性
+ *		在当前的Java内存模型下，线程可以把变量保存在本地内存（比如机器的寄存器）中，而
+ *不是直接在主存中进行读写。这就可能造成一个线程在主存中修改了一个变量的值，而另外一个线
+ *程还继续使用它在寄存器中的变量值的拷贝，造成数据的不一致。 
+ * 		Volatile修饰的成员变量在每次被线程访问时，都强迫从共享内存中重读该成员变量的值。
+ * 而且，当成员变量发生变化时，强迫线程将变化值回写到共享内存。这样在任何时刻，两个不同的
+ * 线程总是看到某个成员变量的同一个值。 
+ *
+ *(2)原子性
+ *		volatile变量的单次读/写操作可以保证原子性的，但是并不能保证i++这种操作的原子性，
+ *因为本质上i++是读、写两次操作。
+ *				
+ * */
+
+
+public class JavaThread {
+		int a=0;	//没加volatile则一直处于死循环，因为一直在操作缓存器中的a
+		public static void main(String[] args) throws Exception {
+				final JavaThread jt=new JavaThread();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						for(;;) {
+							if(jt.a==1) {//单个读操作
+								System.exit(0);
+							}
+						}
+					}
+				}).start();
+				Thread.sleep(1000);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						for(;;) {
+							jt.a=1;//单个写操作
+						}
+					}
+				}).start();
+			}
+}
