@@ -1,7 +1,7 @@
 package day8;
 
 /*
- * 代理模式
+ * 代理模式(静态代理，运行前必须编写好代理类)
  * 		实现一个访问某个对象的中间层类
  * 
  * 优点
@@ -10,9 +10,7 @@ package day8;
  * 		3、智能化。
  * 
  * 缺点
- * 		1、由于在客户端和真实主题之间增加了代理对象，因此有些类型的代理模式可能会造成请求的处理
- *速度变慢。 
- *		2、实现代理模式需要额外的工作，有些代理模式的实现非常复杂。
+ *		1、实现代理模式需要额外的工作，静态代理模式的实现非常复杂。
  * */
 interface Image{
 	void display();
@@ -24,14 +22,7 @@ class RealImage implements Image{
 	
 	public RealImage(String name) {
 		this.name=name;
-		loadImage(this.name);
 	}
-	
-	
-	private void loadImage(String name) {
-		System.out.println("LoadImage: "+name);
-	}
-
 
 	@Override
 	public void display() {
@@ -52,7 +43,9 @@ class ImageProxy{
 		if(image==null) {
 			image=new RealImage(this.name);
 		}
+		System.out.println("处理前....");
 		image.display();
+		System.out.println("处理后...");
 	}
 }
 
