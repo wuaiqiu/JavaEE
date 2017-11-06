@@ -8,7 +8,7 @@ package Base;
  *	 当一个对象被当作基本数据类型使用的时候，编译器会把对象拆箱为基本数据类型
  *
  *包装类（int => Integer、long => Long、byte => Byte、double => Double、
- *	float => Float、short => Short）都是抽象类 Number 的子类。
+ *	float => Float、short => Short、BigDecimal、BigInteger）都是抽象类 Number 的子类。
  *
  *Character 类在对象中包装一个基本类型 char 的值
  *

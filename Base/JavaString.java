@@ -7,6 +7,7 @@ import org.junit.Test;
  *   b.StringBuffer 和 StringBuilder 类的对象能够被多次的修改，并且不产生新的未使用对象。
  *   c.StringBuffer线性安全的，适合多线程中使用
  *   d.StringBuilder线程不安全，但速度快
+ *   e.具有相同字符序列的字符串【直接量】使用同一个实例
  *   
  * String方法
  * 		int	length():返回此字符串的长度
@@ -51,6 +52,11 @@ public class JavaString {
 		 public void doStringTest() {  
 			  
 		        String str = new String("hello");  
+			String str1="hello";
+			String str2="hello";
+			System.out.println(str==str1);//false
+			System.out.println(str1==str2);//true
+
 		        long starttime = System.currentTimeMillis();  
 		        for (int i = 0; i <  10000; i++) {  
 		            str = str + "miss";  
