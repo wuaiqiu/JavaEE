@@ -1,4 +1,4 @@
-package day4;
+package day13;
 /*
  *(1)基本数据类型
  * 	byte(8)	short(16) int(32) long(64) float(32) double(64)
@@ -59,5 +59,23 @@ public class JavaDataType {
 	
 	public static void fun(String name) {
 		name="hello";
+	}
+	
+	//boolean类型转换
+	public void bool() {
+		
+		boolean a=true;
+		//int b=(int)a;错误
+		
+		int i=1;
+		//boolean j=(boolean)i;错误
+	
+	}
+
+	public void StrChar() {
+		System.out.println('a'+1);//98
+		System.out.println("a"+1);//a1
+		System.out.println('a'+'a');//194
+		System.out.println("a"+'a');//aa
 	}
 }
